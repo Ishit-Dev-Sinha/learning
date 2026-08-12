@@ -1,0 +1,57 @@
+.send-button {
+  background-color: green;
+  color: white;
+  padding: 12px 20px;
+  margin-left: 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+input {
+  padding: 12px 50px 12px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  flex-grow: 1;
+}
+.message-box {
+  background-color: gainsboro;
+  border-radius: 10px;
+  height: 10 em;
+  padding: 15px 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  max-width: 300px;
+}
+.chat-input {
+  display: flex;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+.app-container {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.messages-container {
+  flex-grow: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.user-chat {
+  display: flex;
+  justify-content: end;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-items: start;
+}
+.robot-chat {
+  display: flex;
+  justify-content: start;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-items: start;
+}
