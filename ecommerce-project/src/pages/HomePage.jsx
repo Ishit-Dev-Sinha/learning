@@ -7,19 +7,28 @@ import { Header } from '../components/Header.jsx';
 export function HomePage() {
 
     const [products, setProducts] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
+    let counter = 0;
 
     useEffect(() => {
+
         axios.get("http://localhost:3000/api/products")
-            .then((data) => {
-                setProducts(data);
+            .then((response) => {
+                setProducts(response.data);
             });
+
+        axios.get("http://localhost:3000/api/cart-items")
+            .then((response) => {
+                setCartItems(response.data);
+            });
+
     }, []);
 
     return (
         <>
             <title>Ecommerce project</title>
 
-            <Header />
+            <Header cart={cartItems} />
 
             <div className="home-page">
                 <div className="products-grid">
