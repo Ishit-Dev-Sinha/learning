@@ -26,7 +26,7 @@ function App() {
       <Route path="/" element={<HomePage cartItems={cart} />} />
       <Route path="checkout" element={<CheckoutPage cart={cart} />} />
       <Route path="tracking" element={<TrackingPage />} />
-      <Route path="orders" element={<OrdersPage />} />
+      <Route path="orders" element={<OrdersPage cart={cart} />} />
     </Routes>
   );
 }

@@ -6,6 +6,12 @@ import { useState, useEffect } from 'react'
 
 export function CheckoutPage({ cart }) {
 
+    let totalQuantity = 0;
+
+    for (let i of cart) {
+        totalQuantity += i.quantity;
+    }
+
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary, setPaymentSummary] = useState(null);
 
@@ -34,7 +40,7 @@ export function CheckoutPage({ cart }) {
 
                     <div className="checkout-header-middle-section">
                         Checkout (<a className="return-to-home-link"
-                            href="/">3 items</a>)
+                            href="/">{`${totalQuantity} items`}</a>)
                     </div>
 
                     <div className="checkout-header-right-section">
