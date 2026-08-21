@@ -5,29 +5,29 @@ import { TrackingPage } from './pages/TrackingPage.jsx'
 import { Route, Routes } from 'react-router'
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import './index.css'
-import './App.css'
+import './index.css';
+import './App.css';
 
 function App() {
 
   const [cart, setCart] = useState([]);
 
+  async function fetchCartData() {
+    const response = await axios.get("http://localhost:3000/api/cart-items?expand=product");
+    setCart(response.data);
+  }
 
   useEffect(() => {
-    async function fetchCartData() {
-      const response = await axios.get("http://localhost:3000/api/cart-items?expand=product");
-      setCart(response.data);
-    }
     fetchCartData();
   }, []);
 
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage cartItems={cart} />} />
+      <Route path="/" element={<HomePage cartItems={cart} fetchCartData={fetchCartData} />} />
       <Route path="checkout" element={<CheckoutPage cart={cart} />} />
       <Route path="tracking" element={<TrackingPage />} />
-      <Route path="orders" element={<OrdersPage cart={cart} />} />
+      <Route path="orders" element={<OrdersPage cart={cart} fetchCartData={fetchCartData} />} />
     </Routes>
   );
 }

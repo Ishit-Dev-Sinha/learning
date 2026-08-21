@@ -4,7 +4,7 @@ import { useEffect, useState, Fragment } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-export function OrdersPage({ cart }) {
+export function OrdersPage({ cart, fetchCartData }) {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -61,7 +61,13 @@ export function OrdersPage({ cart }) {
                                                             </div>
                                                             <div className="product-delivery-date">{`Arriving on: ${dayjs(product.estimatedDeliveryTimeMs).format('MMMM DD')}`}</div>
                                                             <div className="product-quantity">{`Quantity: ${product.quantity}`}</div>
-                                                            <button className="buy-again-button button-primary">
+                                                            <button className="buy-again-button button-primary" onClick={() => {
+                                                                axios.post('http://localhost:3000/api/cart-items', {
+                                                                    productId: product.id,
+                                                                    quantity: 1
+                                                                });
+                                                                fetchCartData();
+                                                            }}>
                                                                 <img className="buy-again-icon" src="images/icons/buy-again.png" />
                                                                 <span className="buy-again-message">Add to Cart</span>
                                                             </button>
