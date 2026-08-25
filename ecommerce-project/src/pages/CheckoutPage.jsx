@@ -50,6 +50,32 @@ export function CheckoutPage({ cart, fetchCartData }) {
         }
     }
 
+    async function addCartItem(productId, itemQuantity) {
+        itemQuantity++;
+        const response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+            quantity: itemQuantity
+        });
+        if (response.status === 200) {
+            await fetchCartData();
+        }
+    }
+
+    async function subCartItem(productId, itemQuantity) {
+        let response;
+        if (itemQuantity > 1) {
+            itemQuantity--;
+            response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+                quantity: itemQuantity
+            });
+        }
+        else {
+            response = await axios.delete(`http://localhost:3000/api/cart-items/${productId}`);
+        }
+        if (response.status === 200 || response.status === 204) {
+            await fetchCartData();
+        }
+    }
+
     return (
         <>
             <title>Checkout Page</title>
@@ -108,8 +134,11 @@ export function CheckoutPage({ cart, fetchCartData }) {
                                                     <span>
                                                         Quantity: <span className="quantity-label">{item.quantity}</span>
                                                     </span>
-                                                    <span className="update-quantity-link link-primary">
-                                                        Update
+                                                    <span className="update-quantity-link link-primary" onClick={() => { addCartItem(item.productId, item.quantity) }}>
+                                                        Add(+1)
+                                                    </span>
+                                                    <span className="update-quantity-link link-primary" onClick={() => { subCartItem(item.productId, item.quantity) }}>
+                                                        Remove(-1)
                                                     </span>
                                                     <span className="delete-quantity-link link-primary" onClick={() => { deleteCartItem(item.productId) }}>
                                                         Delete
