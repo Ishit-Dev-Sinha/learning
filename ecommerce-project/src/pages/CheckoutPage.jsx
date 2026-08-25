@@ -27,8 +27,6 @@ export function CheckoutPage({ cart, fetchCartData }) {
 
     useEffect(() => {
         fetchDeliveryOptions();
-    }, []);
-    useEffect(() => {
         fetchPaymentSummary();
     }, [cart]);
 
@@ -42,6 +40,13 @@ export function CheckoutPage({ cart, fetchCartData }) {
             }
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    async function deleteCartItem(productId) {
+        const response = await axios.delete(`http://localhost:3000/api/cart-items/${productId}`);
+        if (response.status === 204) {
+            await fetchCartData();
         }
     }
 
@@ -106,7 +111,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
                                                     <span className="update-quantity-link link-primary">
                                                         Update
                                                     </span>
-                                                    <span className="delete-quantity-link link-primary">
+                                                    <span className="delete-quantity-link link-primary" onClick={() => { deleteCartItem(item.productId) }}>
                                                         Delete
                                                     </span>
                                                 </div>
