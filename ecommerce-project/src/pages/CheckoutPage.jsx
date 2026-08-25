@@ -4,7 +4,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 
-export function CheckoutPage({ cart }) {
+export function CheckoutPage({ cart, fetchCartData }) {
 
     let totalQuantity = 0;
 
@@ -15,20 +15,35 @@ export function CheckoutPage({ cart }) {
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary, setPaymentSummary] = useState(null);
 
+    async function fetchDeliveryOptions() {
+        const response = await axios.get("http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime");
+        setDeliveryOptions(response.data);
+    }
+
+    async function fetchPaymentSummary() {
+        const response = await axios.get("http://localhost:3000/api/payment-summary");
+        setPaymentSummary(response.data);
+    }
+
     useEffect(() => {
-        async function fetchDeliveryOptions() {
-            const response = await axios.get("http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime");
-            setDeliveryOptions(response.data);
-        }
-
-        async function fetchPaymentSummary() {
-            const response = await axios.get("http://localhost:3000/api/payment-summary");
-            setPaymentSummary(response.data);
-        }
-
         fetchDeliveryOptions();
-        fetchPaymentSummary();
     }, []);
+    useEffect(() => {
+        fetchPaymentSummary();
+    }, [cart]);
+
+    async function updateDeliveryOption(id, productId, deliveryOptionId) {
+        try {
+            const response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+                deliveryOptionId: id
+            });
+            if (response.status === 200) {
+                await fetchCartData();
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
@@ -101,26 +116,31 @@ export function CheckoutPage({ cart }) {
                                                 <div className="delivery-options-title">
                                                     Choose a delivery option:
                                                 </div>
-                                                {
-                                                    deliveryOptions.map((option) => {
-                                                        return (
-                                                            <div key={option.id} className="delivery-option">
-                                                                <input type="radio"
-                                                                    checked={option.id === item.deliveryOptionId}
-                                                                    className="delivery-option-input"
-                                                                    name={`delivery-option-${option.id}`} />
-                                                                <div>
-                                                                    <div className="delivery-option-date">
-                                                                        {dayjs(option.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
-                                                                    </div>
-                                                                    <div className="delivery-option-price">
-                                                                        {(option.priceCents == 0) ? "FREE Delivery" : `${(option.priceCents / 100)} - Shipping`}
+
+                                                <form>
+                                                    {
+                                                        deliveryOptions.map((option) => {
+                                                            return (
+                                                                <div key={option.id} className="delivery-option" onClick={() => { updateDeliveryOption(option.id, item.productId, item.deliveryOptionId) }} >
+                                                                    <input type="radio"
+                                                                        checked={Number(option.id) === Number(item.deliveryOptionId)}
+                                                                        className="delivery-option-input"
+                                                                        name={`delivery-option-${option.id}`}
+                                                                        onChange={() => { }}
+                                                                    />
+                                                                    <div>
+                                                                        <div className="delivery-option-date">
+                                                                            {dayjs(option.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
+                                                                        </div>
+                                                                        <div className="delivery-option-price">
+                                                                            {(option.priceCents == 0) ? "FREE Delivery" : `${(option.priceCents / 100)} - Shipping`}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        );
-                                                    })
-                                                }
+                                                            );
+                                                        })
+                                                    }
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
