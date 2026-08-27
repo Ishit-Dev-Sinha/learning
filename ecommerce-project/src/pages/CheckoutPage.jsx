@@ -3,6 +3,7 @@ import './checkout-header.css'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 export function CheckoutPage({ cart, fetchCartData }) {
 
@@ -14,6 +15,8 @@ export function CheckoutPage({ cart, fetchCartData }) {
 
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary, setPaymentSummary] = useState(null);
+
+    const navigate = useNavigate();
 
     async function fetchDeliveryOptions() {
         const response = await axios.get("http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime");
@@ -30,7 +33,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
         fetchPaymentSummary();
     }, [cart]);
 
-    async function updateDeliveryOption(id, productId, deliveryOptionId) {
+    async function updateDeliveryOption(id, productId) {
         try {
             const response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
                 deliveryOptionId: id
@@ -73,6 +76,14 @@ export function CheckoutPage({ cart, fetchCartData }) {
         }
         if (response.status === 200 || response.status === 204) {
             await fetchCartData();
+        }
+    }
+
+    async function createOrder() {
+        const response = await axios.post("http://localhost:3000/api/orders");
+        if (response.status === 201) {
+            await fetchCartData();
+            navigate('/orders');
         }
     }
 
@@ -155,7 +166,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
                                                     {
                                                         deliveryOptions.map((option) => {
                                                             return (
-                                                                <div key={option.id} className="delivery-option" onClick={() => { updateDeliveryOption(option.id, item.productId, item.deliveryOptionId) }} >
+                                                                <div key={option.id} className="delivery-option" onClick={() => { updateDeliveryOption(option.id, item.productId) }} >
                                                                     <input type="radio"
                                                                         checked={Number(option.id) === Number(item.deliveryOptionId)}
                                                                         className="delivery-option-input"
@@ -216,7 +227,9 @@ export function CheckoutPage({ cart, fetchCartData }) {
                                     <div className="payment-summary-money">{`$ ${paymentSummary.totalCostCents / 100}`}</div>
                                 </div>
 
-                                <button className="place-order-button button-primary">
+                                <button className="place-order-button button-primary"
+                                    onClick={() => { createOrder() }}
+                                >
                                     Place your order
                                 </button>
                             </>
