@@ -1,11 +1,11 @@
-import axios from 'axios';
 import { useState } from 'react';
+import api from '../api';
 
 export function Product({ product, fetchCartData }) {
     const [quantity, setQuantity] = useState(1);
     const [popupIsVisible, setPopupIsVisible] = useState(false);
     async function addToCart() {
-        await axios.post('http://localhost:3000/api/cart-items', {
+        await api.post('/cart-items', {
             productId: product.id,
             quantity: quantity
         });

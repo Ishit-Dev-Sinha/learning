@@ -3,8 +3,8 @@ import { CheckoutPage } from './pages/CheckoutPage.jsx'
 import { OrdersPage } from './pages/OrdersPage.jsx'
 import { TrackingPage } from './pages/TrackingPage.jsx'
 import { Route, Routes } from 'react-router'
-import axios from "axios";
 import { useEffect, useState } from 'react';
+import api from './api';
 import './index.css';
 import './App.css';
 
@@ -13,7 +13,7 @@ function App() {
   const [cart, setCart] = useState([]);
 
   async function fetchCartData() {
-    const response = await axios.get("http://localhost:3000/api/cart-items?expand=product");
+    const response = await api.get('/cart-items?expand=product');
     setCart(response.data);
   }
 

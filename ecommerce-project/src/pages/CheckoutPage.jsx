@@ -1,9 +1,9 @@
 import './checkout.css'
 import './checkout-header.css'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import api from '../api'
 
 export function CheckoutPage({ cart, fetchCartData }) {
 
@@ -19,12 +19,12 @@ export function CheckoutPage({ cart, fetchCartData }) {
     const navigate = useNavigate();
 
     async function fetchDeliveryOptions() {
-        const response = await axios.get("http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime");
+        const response = await api.get('/delivery-options?expand=estimatedDeliveryTime');
         setDeliveryOptions(response.data);
     }
 
     async function fetchPaymentSummary() {
-        const response = await axios.get("http://localhost:3000/api/payment-summary");
+        const response = await api.get('/payment-summary');
         setPaymentSummary(response.data);
     }
 
@@ -35,7 +35,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
 
     async function updateDeliveryOption(id, productId) {
         try {
-            const response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+            const response = await api.put(`/cart-items/${productId}`, {
                 deliveryOptionId: id
             });
             if (response.status === 200) {
@@ -47,7 +47,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
     }
 
     async function deleteCartItem(productId) {
-        const response = await axios.delete(`http://localhost:3000/api/cart-items/${productId}`);
+        const response = await api.delete(`/cart-items/${productId}`);
         if (response.status === 204) {
             await fetchCartData();
         }
@@ -55,7 +55,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
 
     async function addCartItem(productId, itemQuantity) {
         itemQuantity++;
-        const response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+        const response = await api.put(`/cart-items/${productId}`, {
             quantity: itemQuantity
         });
         if (response.status === 200) {
@@ -67,12 +67,12 @@ export function CheckoutPage({ cart, fetchCartData }) {
         let response;
         if (itemQuantity > 1) {
             itemQuantity--;
-            response = await axios.put(`http://localhost:3000/api/cart-items/${productId}`, {
+            response = await api.put(`/cart-items/${productId}`, {
                 quantity: itemQuantity
             });
         }
         else {
-            response = await axios.delete(`http://localhost:3000/api/cart-items/${productId}`);
+            response = await api.delete(`/cart-items/${productId}`);
         }
         if (response.status === 200 || response.status === 204) {
             await fetchCartData();
@@ -80,7 +80,7 @@ export function CheckoutPage({ cart, fetchCartData }) {
     }
 
     async function createOrder() {
-        const response = await axios.post("http://localhost:3000/api/orders");
+        const response = await api.post('/orders');
         if (response.status === 201) {
             await fetchCartData();
             navigate('/orders');

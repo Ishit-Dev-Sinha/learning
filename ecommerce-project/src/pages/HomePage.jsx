@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './HomePage.css'
 import { Header } from '../components/Header.jsx';
 import { Product } from '../components/Product.jsx'
+import api from '../api';
 
 export function HomePage({ cartItems, fetchCartData }) {
 
@@ -10,7 +10,7 @@ export function HomePage({ cartItems, fetchCartData }) {
 
     useEffect(() => {
         async function fetchProducts() {
-            const response = await axios.get("http://localhost:3000/api/products");
+            const response = await api.get('/products');
             setProducts(response.data);
         }
 

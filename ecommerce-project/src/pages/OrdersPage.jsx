@@ -1,15 +1,15 @@
 import './orders.css';
 import { Header } from '../components/Header.jsx';
 import { useEffect, useState, Fragment } from 'react';
-import axios from 'axios';
 import dayjs from 'dayjs';
+import api from '../api';
 
 export function OrdersPage({ cart, fetchCartData }) {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         async function fetchOrders() {
-            const response = await axios.get('http://localhost:3000/api/orders?expand=products');
+            const response = await api.get('/orders?expand=products');
             setOrders(response.data);
         }
 
@@ -62,7 +62,7 @@ export function OrdersPage({ cart, fetchCartData }) {
                                                             <div className="product-delivery-date">{`Arriving on: ${dayjs(product.estimatedDeliveryTimeMs).format('MMMM DD')}`}</div>
                                                             <div className="product-quantity">{`Quantity: ${product.quantity}`}</div>
                                                             <button className="buy-again-button button-primary" onClick={() => {
-                                                                axios.post('http://localhost:3000/api/cart-items', {
+                                                                api.post('/cart-items', {
                                                                     productId: product.id,
                                                                     quantity: 1
                                                                 });
