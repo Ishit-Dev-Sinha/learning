@@ -26,7 +26,7 @@ export const WavyBackground = ({
   waveOpacity?: number;
   [key: string]: any;
 }) => {
-  const noise = createNoise3D();
+  const noiseRef = useRef<ReturnType<typeof createNoise3D> | null>(null);
   let w: number,
     h: number,
     nt: number,
@@ -75,7 +75,7 @@ export const WavyBackground = ({
       ctx.lineWidth = waveWidth || 50;
       ctx.strokeStyle = waveColors[i % waveColors.length];
       for (x = 0; x < w; x += 5) {
-        var y = noise(x / 800, 0.3 * i, nt) * 100;
+        var y = (noiseRef.current?.(x / 800, 0.3 * i, nt) ?? 0) * 100;
         ctx.lineTo(x, y + h * 0.5); // adjust for height, currently at 50% of the container
       }
       ctx.stroke();
@@ -93,6 +93,7 @@ export const WavyBackground = ({
   };
 
   useEffect(() => {
+    noiseRef.current = createNoise3D();
     init();
     return () => {
       cancelAnimationFrame(animationId);
