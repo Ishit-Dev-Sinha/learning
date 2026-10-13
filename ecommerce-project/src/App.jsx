@@ -5,8 +5,6 @@ import { TrackingPage } from './pages/TrackingPage.jsx'
 import { Route, Routes } from 'react-router'
 import { useEffect, useState } from 'react';
 import api from './api';
-import './index.css';
-import './App.css';
 
 function App() {
 
@@ -26,7 +24,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage cartItems={cart} fetchCartData={fetchCartData} />} />
       <Route path="checkout" element={<CheckoutPage cart={cart} fetchCartData={fetchCartData} />} />
-      <Route path="tracking" element={<TrackingPage />} />
+      <Route path="tracking" element={<TrackingPage cart={cart} />} />
       <Route path="orders" element={<OrdersPage cart={cart} fetchCartData={fetchCartData} />} />
     </Routes>
   );

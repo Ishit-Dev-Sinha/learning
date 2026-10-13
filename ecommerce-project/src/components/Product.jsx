@@ -1,3 +1,7 @@
+// STEP 4 (Product Component Migration):
+// 1. Useful MUI components to import:
+import { Card, Box, Typography, Button, FormControl, Select, MenuItem, Rating, Fade } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useState } from 'react';
 import api from '../api';
 
@@ -21,53 +25,89 @@ export function Product({ product, fetchCartData }) {
     }
 
     return (
-        <div className="product-container">
-            <div className="product-image-container">
-                <img className="product-image"
-                    src={product.image} />
-            </div>
+          <Card
+            variant="outlined"
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              p: 2.5,
+              borderRadius: 0,
+              borderColor: '#f0f0f0',
+            }}
+          >
+            
+            <Box sx={{ height: 180, display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Box
+                component="img"
+                src={product.image}
+                sx={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              />
+            </Box>
 
-            <div className="product-name limit-text-to-2-lines">
-                {product.name}
-            </div>
+            <Typography
+              sx={{
+                height: 40,
+                mb: 0.5,
+                fontSize: 14,
+                lineHeight: '20px',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {product.name}
+            </Typography>
 
-            <div className="product-rating-container">
-                <img className="product-rating-stars"
-                    src={`images/ratings/rating-${product.rating.stars * 10}.png`} />
-                <div className="product-rating-count link-primary">
-                    {product.rating.count}
-                </div>
-            </div>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+              <Rating value={product.rating.stars} precision={0.5} readOnly size="small" />
+              <Typography sx={{ color: 'primary.main', fontSize: 14, ml: 1 }}>
+                {product.rating.count}
+              </Typography>
+            </Box>
 
-            <div className="product-price">
-                ${product.priceCents / 100}
-            </div>
+            <Typography sx={{ fontWeight: 700, mb: 1.5 }}>
+              ${(product.priceCents / 100).toFixed(2)}
+            </Typography>
 
-            <div className="product-quantity-container">
-                <select value={quantity} onChange={selectQuantity}>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-            </div>
+            <FormControl size="small" sx={{ mb: 2, width: 80 }}>
+              <Select
+                value={quantity}
+                onChange={selectQuantity}
+                sx={{ height: 32, fontSize: 14, bgcolor: 'white' }}
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <MenuItem key={num} value={num}>
+                    {num}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-            <div className="product-spacer"></div>
+            <Box sx={{ flex: 1 }} />
 
-            {popupIsVisible && <div className="added-to-cart">
-                <img src="images/icons/checkmark.png" />
-                Added
-            </div>}
+            <Fade in={popupIsVisible}>
+              <Box sx={{ display: 'flex', alignItems: 'center', color: 'primary.main', fontSize: 16, mb: 1, minHeight: 24 }}>
+                <CheckCircleIcon sx={{ fontSize: 19, mr: 0.8 }} />
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>Added</Typography>
+              </Box>
+            </Fade>
 
-            <button className="add-to-cart-button button-primary" onClick={addToCart}>
-                Add to Cart
-            </button>
-        </div>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={addToCart}
+              sx={{
+                textTransform: 'none',
+                borderRadius: '5px',
+                py: 0.8,
+                boxShadow: '0 2px 5px rgba(220, 220, 220, 0.5)',
+              }}
+            >
+              Add to Cart
+            </Button>
+          </Card>
     );
 }
